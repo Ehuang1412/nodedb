@@ -50,25 +50,25 @@ app.get('/', async (req,res)=>{
   //     body: 'Show them this article'
   //   }
   // ]
-  console.log('...require:\n',Article);
-  console.log('...model:\n',mongoose.model('Article'));
-  console.log(Object.keys(Article));
-  console.log('...\n',Article.collection);
-  console.log('3...\n',Object.keys(Article.collection.collectionName));
-  const arts = await Article.find({});
+  // console.log('...require:\n',Article);
+  // console.log('...model:\n',mongoose.model('Article'));
+  // console.log(Object.keys(Article));
+  // console.log('...\n',Article.collection);
+  // console.log('3...\n',Object.keys(Article.collection.collectionName));
+  // const arts = await Article.find({});
   
-  console.log('ARTS',arts)
+  // console.log('ARTS',arts)
 
   Article.find({}, function(err, articles){
-    console.log('db:',db.name);
-      console.log('properties:\n',Object.keys(db.models));
-      console.log('properties:\n',Object.keys(db.models['Article']['schema']));
+    // console.log('db:',db.name);
+    //   console.log('properties:\n',Object.keys(db.models));
+    //   console.log('properties:\n',Object.keys(db.models['Article']['schema']));
     if(err){
       console.log(err);
     }
     else{
       
-      
+      console.log("RENDER INDEX")
       res.render('index',{
         title:'Articles',
         articles: articles
@@ -88,6 +88,12 @@ app.get('/articles/add', function(req,res){
   res.render('add_article',{
     title:'Add Article'
   });
+});
+
+// Add Submit POST Route
+app.post('/articles/add', function(req,res){
+  console.log('Submitted');
+  return;
 });
 
 // Start Server
