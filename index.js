@@ -94,11 +94,16 @@ app.get('/', async (req,res)=>{
 });
 
 // Get Single Article
-app.get('/article/:id', functions(req,res){
-  console.log('article:')
+app.get('/article/:id', function(req,res){
+  console.log('\narticle:\n\n');
   Article.findById(req.params.id, function(err,article){
+
     console.log('article:')
     console.log(article);
+
+    res.render('article',{
+      article:article
+    });
     return;
   })
 });
@@ -128,6 +133,17 @@ app.post('/articles/add', function(req,res){
     }
   });
 
+});
+
+// Load Edit Form
+app.get('/article/edit/:id', function(req,res){
+  
+  Article.findById(req.params.id, function(err,article){
+    res.render('edit_article',{
+      article:article
+    });
+    return;
+  })
 });
 
 // Start Server
