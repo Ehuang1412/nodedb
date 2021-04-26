@@ -2,7 +2,8 @@ doctype html
 html 
   head
     title Knowledgebase
-    // link {rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"}
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css")
+    link(rel='stylesheet' href='/css/style.css')
   body
     nav.navbar.navbar-inverse
       .container
@@ -29,6 +30,7 @@ html
                 a(href='/users/register') Register
               li
                 a(href='/users/login') Login
+    hr
     .container
       // != messages('message', locals)
       if errors
@@ -43,5 +45,13 @@ html
     br
     hr
     footer
-      p Copyright &copy; 2017
+      p Arihant Jain's Ex-Fiance &copy; 2017
+      br
+      p Reach him at Fetch Rewards for the Machine Learning Engineer.
+      
+      p He is no longer at NYU.
+
+  // acript(src='/bower_components/jquery/dist/jquery.js')
+  // script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
+  script(src='/js/main.js')
 
