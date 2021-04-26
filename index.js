@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 mongoose.connect('mongodb+srv://subscriber:JBMcjDV8r0fTO2Fm@cluster0.ei6zq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }); // mongodb user: subscriber JBMcjDV8r0fTO2Fm
 let db = mongoose.connection;
@@ -26,6 +27,15 @@ let Article = require('./models/article');
 // Load View Engine
 app.set('views', path.join(__dirname, 'views')); // Specified folder where our views will be kept or our templates
 app.set('view engine','pug');
+
+// Body Parser Middleware
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
+
+// Set Public Folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Home Route
 app.get('/', async (req,res)=>{
@@ -92,8 +102,22 @@ app.get('/articles/add', function(req,res){
 
 // Add Submit POST Route
 app.post('/articles/add', function(req,res){
-  console.log('Submitted');
-  return;
+  let article  = new Article();
+  article.title = req.body.title; //body parser
+  article.author = req.body.author;
+  article.body = req.body.body;
+  //db.articles.find().pretty(); in mongodb
+
+  article.save(function(err){
+    if(err){
+      console.log(err);
+      return;
+
+    }else{
+      res.redirect('/');
+    }
+  });
+
 });
 
 // Start Server
