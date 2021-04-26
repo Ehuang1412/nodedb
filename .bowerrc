@@ -1,0 +1,6 @@
+//bower install will create bower components which we want to put in the public folder so we can load it statically
+// and that is defined in .bowerrc
+
+{
+"director":"public/bower_components"
+}
