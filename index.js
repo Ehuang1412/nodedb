@@ -92,6 +92,16 @@ app.get('/', async (req,res)=>{
       // });//view
     
 });
+
+// Get Single Article
+app.get('/article/:id', functions(req,res){
+  console.log('article:')
+  Article.findById(req.params.id, function(err,article){
+    console.log('article:')
+    console.log(article);
+    return;
+  })
+});
   
 // Add Route
 app.get('/articles/add', function(req,res){
