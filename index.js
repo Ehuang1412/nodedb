@@ -3,7 +3,7 @@ const path = require('path');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const {check, validationResult} = require('express-validator/check');
+const { check, validationResult } = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session'); 
 
@@ -43,9 +43,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Express Session Middleware
 app.use(session({
   secret: 'keyboard cat',
-  resave: false,
+  resave: true,
   saveUninitialized: true,
-  cookie: { secure: true }
+  // cookie: { secure: true }
 }))
 
 // Express Messages Middleware
@@ -130,8 +130,12 @@ app.get('/', async (req,res)=>{
     
 });
 
+
+
+
+
 // Get Single Article
-app.get('/article/:id', function(req,res){
+router.get('/:id', function(req,res){
   console.log('\narticle:\n\n');
   Article.findById(req.params.id, function(err,article){
 
@@ -146,20 +150,25 @@ app.get('/article/:id', function(req,res){
 });
   
 // Add Route
-app.get('/articles/add', function(req,res){
+router.get('/add', function(req,res){
   res.render('add_article',{
     title:'Add Article'
   });
 });
 
 // Add Submit POST Route
-app.post('/articles/add',
+router.post('/add',
   [
     check('title').isLength({min:1}).trim().withMessage('Title required'),
     check('author').isLength({min:1}).trim().withMessage('Author required'),
     check('body').isLength({min:1}).trim().withMessage('Body required')
   ],
+  
   function(req,res,next){
+
+    req.checkBody('title','Title is required').notEmpty();
+    req.checkBody('author','author is required').notEmpty();
+    req.checkBody('body','body is required').notEmpty();
     let article  = new Article();
     article.title = req.body.title; //body parser
     article.author = req.body.author;
@@ -201,7 +210,7 @@ app.post('/articles/add',
 );
 
 // Load Edit Form
-app.get('/article/edit/:id', function(req,res){
+router.get('/edit/:id', function(req,res){
   
   Article.findById(req.params.id, function(err,article){
     res.render('edit_article',{
@@ -212,7 +221,7 @@ app.get('/article/edit/:id', function(req,res){
 });
 
 // Update Submit POST Route
-app.post('/articles/edit/:id', function(req,res){
+router.post('/edit/:id', function(req,res){
   console.log('funcion callto edit')
   let article  = {};
   article.title = req.body.title; //body parser
@@ -227,6 +236,7 @@ app.post('/articles/edit/:id', function(req,res){
       console.log(err);
       return;
     }else{
+      req.flash('success', 'Article Updated');
       res.redirect('/');
     }
   });
@@ -234,7 +244,7 @@ app.post('/articles/edit/:id', function(req,res){
 });
 
 // Delete Article
-app.delete('/article/:id', function(req,res){
+router.delete('/:id', function(req,res){
   let query = {_id:req.params.id}//comes from the url
 
   Article.remove(query, function(err){
@@ -246,9 +256,17 @@ app.delete('/article/:id', function(req,res){
   });
 });
 
+
+
+
+
+
+
+// Route File
+let articles = require('./routes/articles');
+app.use('/articles', articles );
+
 // Start Server
 app.listen(3000, function(){
   console.log('Server startd on port 3000...');
 });
-
-
