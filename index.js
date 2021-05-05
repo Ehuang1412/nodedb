@@ -3,6 +3,9 @@ const path = require('path');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const {check, validationResult} = require('express-validator/check');
+const flash = require('connect-flash');
+const session = require('express-session'); 
 
 mongoose.connect('mongodb+srv://subscriber:JBMcjDV8r0fTO2Fm@cluster0.ei6zq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }); // mongodb user: subscriber JBMcjDV8r0fTO2Fm
 let db = mongoose.connection;
@@ -36,6 +39,40 @@ app.use(bodyParser.json());
 
 // Set Public Folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Express Session Middleware
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
+
+// Express Messages Middleware
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res); //global variable to a library called 'express-messages'
+  next();
+});
+
+//Express Validator Middleware (no longer required)
+// app.use(expressValidator({
+//   errorFormatter: function(param, msg, value){
+//     var namespace = param.split('.'),
+//     root = namespace.shift(),
+//     formParam = root;
+ 
+
+//     while(namespace.length){
+//       formPram += '[' + namespace.shift() + ']';
+//     }
+//     return {
+//       param :formParam,
+//       msg :msg,
+//       value:value
+//     };
+//   }
+// });
 
 // Home Route
 app.get('/', async (req,res)=>{
@@ -116,24 +153,52 @@ app.get('/articles/add', function(req,res){
 });
 
 // Add Submit POST Route
-app.post('/articles/add', function(req,res){
-  let article  = new Article();
-  article.title = req.body.title; //body parser
-  article.author = req.body.author;
-  article.body = req.body.body;
-  //db.articles.find().pretty(); in mongodb
+app.post('/articles/add',
+  [
+    check('title').isLength({min:1}).trim().withMessage('Title required'),
+    check('author').isLength({min:1}).trim().withMessage('Author required'),
+    check('body').isLength({min:1}).trim().withMessage('Body required')
+  ],
+  function(req,res,next){
+    let article  = new Article();
+    article.title = req.body.title; //body parser
+    article.author = req.body.author;
+    article.body = req.body.body;
+    //db.articles.find().pretty(); in mongodb
 
-  article.save(function(err){
-    if(err){
-      console.log(err);
-      return;
+    //Get Errors
+    const errors = validationResult(req);
 
-    }else{
-      res.redirect('/');
+    if(!errors.isEmpty()){
+      console.log(errors);
+        res.render('add_article',
+          {
+            title: 'Aadd Article',
+            article:article,
+            errors:errors.mapped()
+          }
+        );
     }
-  });
+    else{
+      article.title = req.body.title;
+      article.author = req.body.author;
+      article.body = req.body.body;
 
-});
+      article.save(function(err){
+        if(err){
+          console.log(err);
+          throw err;
+          return;
+
+        }else{
+          req.flash('success', 'Article Added');
+          res.redirect('/');
+        }
+      }); 
+    }
+
+  }
+);
 
 // Load Edit Form
 app.get('/article/edit/:id', function(req,res){
