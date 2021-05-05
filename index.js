@@ -148,10 +148,12 @@ app.get('/article/edit/:id', function(req,res){
 
 // Update Submit POST Route
 app.post('/articles/edit/:id', function(req,res){
+  console.log('funcion callto edit')
   let article  = {};
   article.title = req.body.title; //body parser
   article.author = req.body.author;
   article.body = req.body.body;
+  console.log('edit article:',req.body.title, req.body.author, req.body.body);
 
   let query = {_id:req.params.id};
 
