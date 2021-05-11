@@ -248,7 +248,7 @@ app.delete('/article/:id', function(req,res){
 });
 
 
-<<<<<<< HEAD
+
 ////////////////////////////////// USER.JS
 
 // //Bring in User Model
@@ -315,8 +315,6 @@ app.delete('/article/:id', function(req,res){
 // })
 
 
-=======
->>>>>>> b5ec1d4d6aa177f52f85479c87dc97ce0ae6563a
 //Route Files
 let users = require('./routes/users');
 app.use('/users',users);
