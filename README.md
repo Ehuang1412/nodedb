@@ -9,3 +9,4 @@ Working:
 
 Not Working:
 - Edit/update article withh 404 error
+- Register new user @ /users/register
