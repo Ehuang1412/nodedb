@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
+<<<<<<< HEAD
 const bodyParser = require('body-parser');
 const {check, validationResult} = require('express-validator/check');
 const flash = require('connect-flash');
 const session = require('express-session'); 
+=======
+>>>>>>> b5ec1d4d6aa177f52f85479c87dc97ce0ae6563a
 
 //Bring in User Model
 let User = require('../models/user');
 
-// REQUEST FUNCTIONS
 
 //Register Form
 router.get('/register', function(req,res){
@@ -47,6 +49,10 @@ router.post('/register',
         password:password
       }); 
     }
+
+//Register Form
+router.get('/register', function(req,res){
+  res.render('register');
 })
 
 // Register Process
@@ -57,6 +63,7 @@ router.post('/register', function(req,res){
   const password = req.body.password;
   const password2 = req.body.password2;
 
+
   // req.checkBody('Name','Name is required').notEmpty();
   // req.checkBody('email','Email is required').notEmpty();
   // req.checkBody('email','Email is not valid').isEmail();
@@ -64,6 +71,8 @@ router.post('/register', function(req,res){
   // req.checkBody('password','Password is required').notEmpty();
   // req.checkBody('password2','Password do not match').notEmpty();
   // req.checkBody('password2','Passwords do not match').equals(req.body.password);
+
+
 })
 
 module.exports = router;
